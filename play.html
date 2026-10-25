@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ray 対局</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #242820; background: #f5f4ee; }
+    * { box-sizing: border-box; }
+    body { max-width: 72rem; margin: 0 auto; padding: 1.5rem; }
+    header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+    h1 { margin: 0 0 1rem; font-size: 1.7rem; }
+    a { color: #326343; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) 18rem; gap: 1.5rem; align-items: start; }
+    #board { width: 100%; touch-action: manipulation; border-radius: .5rem; overflow: hidden; box-shadow: 0 3px 16px #30230f20; }
+    #board[aria-disabled="false"] { cursor: pointer; }
+    #board[aria-busy="true"] { cursor: progress; }
+    aside { padding: 1.2rem; background: white; border: 1px solid #deded5; border-radius: .5rem; }
+    #status { margin-top: 0; min-height: 3em; font-weight: 600; line-height: 1.6; }
+    #summary { line-height: 1.7; font-size: .9rem; white-space: pre-line; }
+    fieldset { min-width: 0; margin: 1rem 0; padding: 0; border: 0; }
+    legend { margin-bottom: .7rem; font-weight: 600; }
+    label { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: .5rem; margin-bottom: .65rem; }
+    select, input, button { font: inherit; padding: .55rem; border: 1px solid #a6aea2; border-radius: .3rem; min-width: 0; }
+    select, input { width: 100%; background: white; color: inherit; }
+    button { cursor: pointer; background: #edf2eb; color: #243e2b; }
+    button:disabled { cursor: default; opacity: .5; }
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #508f62; outline-offset: 2px; }
+    #start { width: 100%; background: #326343; color: white; }
+    #moves { display: flex; gap: .5rem; }
+    #moves button { flex: 1; }
+    .hint { color: #535b50; font-size: .85rem; line-height: 1.7; }
+    details { margin-top: 1.5rem; }
+    summary { cursor: pointer; }
+    textarea { width: 100%; height: 12rem; margin-top: .6rem; font-family: monospace; }
+    @media (max-width: 760px) {
+      body { padding: 1rem; }
+      main { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+      aside { padding: 1rem; }
+      #status { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Ray 対局</h1><a href="index.html">GTPコンソール</a></header>
+  <main>
+    <div id="board" role="img" aria-label="囲碁の盤面。交点をクリックして着手します。" aria-disabled="true" aria-busy="true"></div>
+    <aside>
+      <p id="status" role="status" aria-live="polite">エンジンとパラメータを読み込み中…</p>
+      <p id="summary"></p>
+      <fieldset id="moves" disabled>
+        <button id="pass" type="button">パス</button>
+        <button id="resign" type="button">投了</button>
+      </fieldset>
+      <form id="settings">
+        <fieldset id="setup" disabled>
+          <legend>次の対局の設定</legend>
+          <label>盤サイズ<select id="size"><option value="9">9路盤</option><option value="13">13路盤</option><option value="19">19路盤</option></select></label>
+          <label>あなたの色<select id="color"><option value="b">黒（先手）</option><option value="w">白（後手）</option></select></label>
+          <label>コミ（白）<input id="komi" type="number" value="6.5" min="-100" max="100" step="0.5" required></label>
+          <label>思考時間<select id="seconds"><option value="1">1秒 / 手</option><option value="3">3秒 / 手</option><option value="5">5秒 / 手</option><option value="10">10秒 / 手</option></select></label>
+          <button id="start" type="submit">新しい対局</button>
+        </fieldset>
+      </form>
+      <p class="hint">交点をクリック／タップして着手。石の取り上げ・自殺手・コウは自動処理します。連続パスで終局し、Rayの推定結果を表示します。</p>
+      <p class="hint">盤上の丸印は最後の着手です。</p>
+      <p class="hint">思考時間は上限の目安です。局面や探索木の上限により短くなることがあります。</p>
+    </aside>
+  </main>
+  <details><summary>対局ログ（GTP）</summary><textarea id="log" aria-label="対局ログ" readonly></textarea></details>
+  <noscript><p>対局にはJavaScriptを有効にしてください。</p></noscript>
+  <script src="vendor/wgo.js"></script>
+  <script src="play.js"></script>
+</body>
+</html>

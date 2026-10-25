@@ -1,153 +1,62 @@
 <!doctype html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Emscripten-Generated Code</title>
-    <style>
-      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
-      textarea.emscripten { font-family: monospace; width: 80%; }
-      div.emscripten { text-align: center; }
-      div.emscripten_border { border: 1px solid black; }
-      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-      canvas.emscripten { border: 0px none; background-color: black; }
-
-      .spinner {
-        height: 50px;
-        width: 50px;
-        margin: 0px auto;
-        -webkit-animation: rotation .8s linear infinite;
-        -moz-animation: rotation .8s linear infinite;
-        -o-animation: rotation .8s linear infinite;
-        animation: rotation 0.8s linear infinite;
-        border-left: 10px solid rgb(0,150,240);
-        border-right: 10px solid rgb(0,150,240);
-        border-bottom: 10px solid rgb(0,150,240);
-        border-top: 10px solid rgb(100,0,200);
-        border-radius: 100%;
-        background-color: rgb(200,100,250);
-      }
-      @-webkit-keyframes rotation {
-        from {-webkit-transform: rotate(0deg);}
-        to {-webkit-transform: rotate(360deg);}
-      }
-      @-moz-keyframes rotation {
-        from {-moz-transform: rotate(0deg);}
-        to {-moz-transform: rotate(360deg);}
-      }
-      @-o-keyframes rotation {
-        from {-o-transform: rotate(0deg);}
-        to {-o-transform: rotate(360deg);}
-      }
-      @keyframes rotation {
-        from {transform: rotate(0deg);}
-        to {transform: rotate(360deg);}
-      }
-
-    </style>
-  </head>
-  <body>
-    <hr/>
-    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>  
-    </div>
-    <hr/>
-	<div>
-	  <input type="text" value="play w c3" id="gtp-in">
-      <input type="button" value="send" onclick="Module.GTP_exec(document.getElementById('gtp-in').value)">
-	  <br>
-      <input type="button" value="genmove b" onclick="Module.GTP_exec('genmove b')">
-      <input type="button" value="genmove w" onclick="Module.GTP_exec('genmove w')">
-	  <br>
-      <input type="button" value="show" onclick="Module.GTP_exec('showboard')">
-      <input type="button" value="clear" onclick="Module.GTP_exec('clear_board')">
-      <input type="button" value="9x9" onclick="Module.GTP_exec('boardsize 9')">
-      <input type="button" value="13x13" onclick="Module.GTP_exec('boardsize 13')">
-      <input type="button" value="19x19" onclick="Module.GTP_exec('boardsize 19')">
-	</div>
-    <hr/>
-	<hr/>
-    <textarea class="emscripten" id="output" rows="20"></textarea>
-    <hr>
-    <script type='text/javascript'>
-      var statusElement = document.getElementById('status');
-      var progressElement = document.getElementById('progress');
-      var spinnerElement = document.getElementById('spinner');
-
-      var Module = {
-        preRun: [],
-        postRun: [],
-        print: (function() {
-          var element = document.getElementById('output');
-          if (element) element.value = ''; // clear browser cache
-          return function(text) {
-            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-            console.log(text);
-            if (element) {
-              element.value += text + "\n";
-              element.scrollTop = element.scrollHeight; // focus on bottom
-            }
-          };
-        })(),
-      printErr: (function() {
-          var element = document.getElementById('output');
-          if (element) element.value = ''; // clear browser cache
-          return function(text) {
-            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-            console.log(text);
-            if (element) {
-              element.value += text + "\n";
-              element.scrollTop = element.scrollHeight; // focus on bottom
-            }
-          };
-        })(),
-        canvas: null,
-        setStatus: function(text) {
-          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-          if (text === Module.setStatus.text) return;
-          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-          var now = Date.now();
-          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
-          if (m) {
-            text = m[1];
-            progressElement.value = parseInt(m[2])*100;
-            progressElement.max = parseInt(m[4])*100;
-            progressElement.hidden = false;
-            spinnerElement.hidden = false;
-          } else {
-            progressElement.value = null;
-            progressElement.max = null;
-            progressElement.hidden = true;
-            if (!text) spinnerElement.hidden = true;
-          }
-          statusElement.innerHTML = text;
-        },
-        totalDependencies: 0,
-        monitorRunDependencies: function(left) {
-          this.totalDependencies = Math.max(this.totalDependencies, left);
-          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-        }
-      };
-      Module.setStatus('Downloading...');
-      window.onerror = function() {
-        Module.setStatus('Exception thrown, see JavaScript console');
-        spinnerElement.style.display = 'none';
-        Module.setStatus = function(text) {
-          if (text) Module.printErr('[post-exception status] ' + text);
-        };
-      };
-
-      //document.querySelector('.mybutton').addEventListener('click',
-      function __gtp(){
-		  alert('check console');
-		  var result = Module.ccall('myFunction', // name of C function
-									null, // return type
-									null, // argument types
-									null); // arguments
-	  }
-    </script>
-    <script async type="text/javascript" src="ray.js"></script>
-  </body>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ray GTP</title>
+<style>
+  body { max-width: 60rem; margin: 2rem auto; padding: 0 1rem; font-family: sans-serif; }
+  input { width: 70%; }
+  textarea { box-sizing: border-box; width: 100%; height: 28rem; margin-top: 1rem; font-family: monospace; }
+</style>
+<h1>Ray GTP</h1>
+<p id="status">エンジンとパラメータを読み込み中…</p>
+<form id="commands">
+  <fieldset id="controls" disabled>
+    <input id="command" aria-label="GTPコマンド" value="name" autocomplete="off">
+    <button>送信</button>
+    <p>
+      <button type="button" data-command="genmove b">genmove b</button>
+      <button type="button" data-command="genmove w">genmove w</button>
+      <button type="button" data-command="showboard">showboard</button>
+      <button type="button" data-command="clear_board">clear_board</button>
+      <button type="button" data-command="boardsize 9">9×9</button>
+      <button type="button" data-command="boardsize 19">19×19</button>
+    </p>
+  </fieldset>
+</form>
+<textarea id="output" aria-label="GTP出力" readonly></textarea>
+<script>
+  const output = document.getElementById('output');
+  const status = document.getElementById('status');
+  function print(text) {
+    output.value += text + '\n';
+    output.scrollTop = output.scrollHeight;
+  }
+  var Module = {
+    arguments: ['--const-time', '1', '--tree-size', '4096'],
+    print: print,
+    printErr: print,
+    setStatus: function(text) { if (text) status.textContent = text; },
+    onAbort: function(reason) { status.textContent = '読み込み失敗: ' + reason; }
+  };
+  document.getElementById('commands').addEventListener('submit', function(event) {
+    event.preventDefault();
+    send(document.getElementById('command').value);
+  });
+  document.querySelectorAll('[data-command]').forEach(function(button) {
+    button.addEventListener('click', function() { send(button.dataset.command); });
+  });
+  function send(command) {
+    print('> ' + command);
+    try { Module.GTP_exec(command); }
+    catch (error) { print(String(error)); }
+  }
+</script>
+<script src="ray.js"></script>
+<script>
+  Module.ready.then(function() {
+    document.getElementById('controls').disabled = false;
+    status.textContent = '準備完了';
+  }).catch(function(error) { status.textContent = String(error); });
+</script>
 </html>
